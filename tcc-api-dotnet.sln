@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCC.API", "TCC.API\TCC.API.csproj", "{B72CC215-B69C-424A-9158-B0B554D7455D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B72CC215-B69C-424A-9158-B0B554D7455D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B72CC215-B69C-424A-9158-B0B554D7455D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B72CC215-B69C-424A-9158-B0B554D7455D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B72CC215-B69C-424A-9158-B0B554D7455D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
