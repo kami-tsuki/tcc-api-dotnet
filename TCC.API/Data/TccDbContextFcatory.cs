@@ -4,8 +4,6 @@ public class TccDbContextFactory : IDesignTimeDbContextFactory<TccDbContext>
 {
     public TccDbContext CreateDbContext(params string[]? args)
     {
-        
-        
         var configuration = new ConfigurationBuilder()
                            .SetBasePath(Directory.GetCurrentDirectory())
                            .AddJsonFile("appsettings.json")

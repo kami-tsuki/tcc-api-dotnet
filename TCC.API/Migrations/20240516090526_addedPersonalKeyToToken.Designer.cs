@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TCC.API.Data;
 
@@ -11,9 +12,11 @@ using TCC.API.Data;
 namespace TCC.API.Migrations
 {
     [DbContext(typeof(TccDbContext))]
-    partial class TccDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240516090526_addedPersonalKeyToToken")]
+    partial class addedPersonalKeyToToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,174 +24,6 @@ namespace TCC.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("TCC.API.Models.authentication.Role", b =>
-                {
-                    b.Property<ulong>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint unsigned");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<ulong>("CreatedBy")
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<ulong>("UpdatedBy")
-                        .HasColumnType("bigint unsigned");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1ul,
-                            CreatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 868, DateTimeKind.Local).AddTicks(9080),
-                            CreatedBy = 0ul,
-                            IsDeleted = false,
-                            Name = "Guest",
-                            UpdatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(6181),
-                            UpdatedBy = 0ul
-                        },
-                        new
-                        {
-                            Id = 10ul,
-                            CreatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7374),
-                            CreatedBy = 0ul,
-                            IsDeleted = false,
-                            Name = "User",
-                            UpdatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7384),
-                            UpdatedBy = 0ul
-                        },
-                        new
-                        {
-                            Id = 20ul,
-                            CreatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7387),
-                            CreatedBy = 0ul,
-                            IsDeleted = false,
-                            Name = "Super-User",
-                            UpdatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7388),
-                            UpdatedBy = 0ul
-                        },
-                        new
-                        {
-                            Id = 100ul,
-                            CreatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7390),
-                            CreatedBy = 0ul,
-                            IsDeleted = false,
-                            Name = "Moderator",
-                            UpdatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7391),
-                            UpdatedBy = 0ul
-                        },
-                        new
-                        {
-                            Id = 1000ul,
-                            CreatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7393),
-                            CreatedBy = 0ul,
-                            IsDeleted = false,
-                            Name = "Admin",
-                            UpdatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7394),
-                            UpdatedBy = 0ul
-                        },
-                        new
-                        {
-                            Id = 1001ul,
-                            CreatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7396),
-                            CreatedBy = 0ul,
-                            IsDeleted = false,
-                            Name = "App-Admin",
-                            UpdatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7398),
-                            UpdatedBy = 0ul
-                        },
-                        new
-                        {
-                            Id = 1002ul,
-                            CreatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7400),
-                            CreatedBy = 0ul,
-                            IsDeleted = false,
-                            Name = "API-Admin",
-                            UpdatedAt = new DateTime(2024, 5, 16, 13, 33, 12, 877, DateTimeKind.Local).AddTicks(7401),
-                            UpdatedBy = 0ul
-                        });
-                });
-
-            modelBuilder.Entity("TCC.API.Models.authentication.User", b =>
-                {
-                    b.Property<ulong>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint unsigned");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<ulong>("CreatedBy")
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PersonalKey")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar(36)");
-
-                    b.Property<ulong?>("RoleId")
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<ulong?>("SettingsId")
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<ulong>("UpdatedBy")
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("SettingsId");
-
-                    b.HasIndex("Username")
-                        .IsUnique();
-
-                    b.ToTable("Users");
-                });
 
             modelBuilder.Entity("TCC.API.Models.data.Address", b =>
                 {
@@ -200,17 +35,14 @@ namespace TCC.API.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Complement")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -219,37 +51,31 @@ namespace TCC.API.Migrations
                         .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Neighborhood")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Number")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Reference")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("State")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -262,8 +88,7 @@ namespace TCC.API.Migrations
 
                     b.Property<string>("ZipCode")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -510,6 +335,9 @@ namespace TCC.API.Migrations
                     b.Property<ulong?>("DocumentId")
                         .HasColumnType("bigint unsigned");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("longtext");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
@@ -543,24 +371,176 @@ namespace TCC.API.Migrations
                     b.ToTable("Vehicles");
                 });
 
-            modelBuilder.Entity("TCC.API.Models.authentication.User", b =>
+            modelBuilder.Entity("TCC.API.models.authentication.Role", b =>
                 {
-                    b.HasOne("TCC.API.Models.authentication.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId");
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned");
 
-                    b.HasOne("TCC.API.Models.data.Settings", "Settings")
-                        .WithMany()
-                        .HasForeignKey("SettingsId");
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
 
-                    b.Navigation("Role");
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
 
-                    b.Navigation("Settings");
+                    b.Property<ulong>("CreatedBy")
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<ulong>("UpdatedBy")
+                        .HasColumnType("bigint unsigned");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1ul,
+                            CreatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 844, DateTimeKind.Local).AddTicks(1190),
+                            CreatedBy = 0ul,
+                            IsDeleted = false,
+                            Name = "Guest",
+                            UpdatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(2497),
+                            UpdatedBy = 0ul
+                        },
+                        new
+                        {
+                            Id = 10ul,
+                            CreatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3355),
+                            CreatedBy = 0ul,
+                            IsDeleted = false,
+                            Name = "User",
+                            UpdatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3362),
+                            UpdatedBy = 0ul
+                        },
+                        new
+                        {
+                            Id = 20ul,
+                            CreatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3365),
+                            CreatedBy = 0ul,
+                            IsDeleted = false,
+                            Name = "Super-User",
+                            UpdatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3366),
+                            UpdatedBy = 0ul
+                        },
+                        new
+                        {
+                            Id = 100ul,
+                            CreatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3369),
+                            CreatedBy = 0ul,
+                            IsDeleted = false,
+                            Name = "Moderator",
+                            UpdatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3370),
+                            UpdatedBy = 0ul
+                        },
+                        new
+                        {
+                            Id = 1000ul,
+                            CreatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3372),
+                            CreatedBy = 0ul,
+                            IsDeleted = false,
+                            Name = "Admin",
+                            UpdatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3373),
+                            UpdatedBy = 0ul
+                        },
+                        new
+                        {
+                            Id = 1001ul,
+                            CreatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3375),
+                            CreatedBy = 0ul,
+                            IsDeleted = false,
+                            Name = "App-Admin",
+                            UpdatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3376),
+                            UpdatedBy = 0ul
+                        },
+                        new
+                        {
+                            Id = 1002ul,
+                            CreatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3378),
+                            CreatedBy = 0ul,
+                            IsDeleted = false,
+                            Name = "API-Admin",
+                            UpdatedAt = new DateTime(2024, 5, 16, 11, 5, 24, 853, DateTimeKind.Local).AddTicks(3379),
+                            UpdatedBy = 0ul
+                        });
+                });
+
+            modelBuilder.Entity("TCC.API.models.authentication.User", b =>
+                {
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<ulong>("CreatedBy")
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PersonalKey")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<ulong?>("RoleId")
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<ulong?>("SettingsId")
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<ulong>("UpdatedBy")
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("SettingsId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TCC.API.Models.data.Address", b =>
                 {
-                    b.HasOne("TCC.API.Models.authentication.User", "User")
+                    b.HasOne("TCC.API.models.authentication.User", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -571,7 +551,7 @@ namespace TCC.API.Migrations
 
             modelBuilder.Entity("TCC.API.Models.data.Document", b =>
                 {
-                    b.HasOne("TCC.API.Models.authentication.User", "User")
+                    b.HasOne("TCC.API.models.authentication.User", "User")
                         .WithMany("Documents")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -586,7 +566,7 @@ namespace TCC.API.Migrations
                         .WithOne("Driver")
                         .HasForeignKey("TCC.API.Models.data.Driver", "DocumentId");
 
-                    b.HasOne("TCC.API.Models.authentication.User", "User")
+                    b.HasOne("TCC.API.models.authentication.User", "User")
                         .WithMany("Drivers")
                         .HasForeignKey("UserId");
 
@@ -597,7 +577,7 @@ namespace TCC.API.Migrations
 
             modelBuilder.Entity("TCC.API.Models.data.Settings", b =>
                 {
-                    b.HasOne("TCC.API.Models.authentication.User", "User")
+                    b.HasOne("TCC.API.models.authentication.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -632,7 +612,7 @@ namespace TCC.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TCC.API.Models.authentication.User", "User")
+                    b.HasOne("TCC.API.models.authentication.User", "User")
                         .WithMany("TravelEntries")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -663,7 +643,7 @@ namespace TCC.API.Migrations
                         .WithOne("Vehicle")
                         .HasForeignKey("TCC.API.Models.data.Vehicle", "DocumentId");
 
-                    b.HasOne("TCC.API.Models.authentication.User", "User")
+                    b.HasOne("TCC.API.models.authentication.User", "User")
                         .WithMany("Vehicles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -674,22 +654,19 @@ namespace TCC.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TCC.API.Models.authentication.Role", b =>
+            modelBuilder.Entity("TCC.API.models.authentication.User", b =>
                 {
-                    b.Navigation("Users");
-                });
+                    b.HasOne("TCC.API.models.authentication.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId");
 
-            modelBuilder.Entity("TCC.API.Models.authentication.User", b =>
-                {
-                    b.Navigation("Addresses");
+                    b.HasOne("TCC.API.Models.data.Settings", "Settings")
+                        .WithMany()
+                        .HasForeignKey("SettingsId");
 
-                    b.Navigation("Documents");
+                    b.Navigation("Role");
 
-                    b.Navigation("Drivers");
-
-                    b.Navigation("TravelEntries");
-
-                    b.Navigation("Vehicles");
+                    b.Navigation("Settings");
                 });
 
             modelBuilder.Entity("TCC.API.Models.data.Address", b =>
@@ -718,6 +695,24 @@ namespace TCC.API.Migrations
             modelBuilder.Entity("TCC.API.Models.data.Vehicle", b =>
                 {
                     b.Navigation("TravelEntries");
+                });
+
+            modelBuilder.Entity("TCC.API.models.authentication.Role", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("TCC.API.models.authentication.User", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Documents");
+
+                    b.Navigation("Drivers");
+
+                    b.Navigation("TravelEntries");
+
+                    b.Navigation("Vehicles");
                 });
 #pragma warning restore 612, 618
         }

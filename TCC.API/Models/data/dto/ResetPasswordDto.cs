@@ -2,6 +2,6 @@
 
 public class ResetPasswordDto
 {
-    public string New { get; set; }
-    public string Old { get; set; }
+    public string New { get; set; } = string.Empty;
+    public string Old { get; set; } = string.Empty;
 }

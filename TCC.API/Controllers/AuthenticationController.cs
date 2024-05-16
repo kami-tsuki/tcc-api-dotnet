@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using TCC.API.Models.data.dto;
-using static TCC.API.Services.TokenService;
-using TokenValidationResult = TCC.API.models.authentication.DataTransfer.TokenValidationResult;
-
-namespace TCC.API.Controllers;
+﻿namespace TCC.API.Controllers;
 
 [ApiController,
  Authorize,
@@ -19,11 +14,15 @@ public class AuthenticationController(
     : BaseController(authService, context, jwtOptions, configuration, tokenService)
 {
     private readonly TokenValidationParameters _tokenValidationParameters = jwtOptions.Get(JwtBearerDefaults.AuthenticationScheme).TokenValidationParameters;
+    private readonly IAuthenticationService _authService = authService;
+    private readonly TccDbContext _context = context;
+    private readonly IConfiguration _configuration = configuration;
+    private readonly ITokenService _tokenService = tokenService;
 
     [HttpPost("login"), ApiVersion("1.0"), AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginDto login)
     {
-        var user = await authService.AuthenticateAsync(login.Username, login.Password);
+        var user = await _authService.AuthenticateAsync(login.Username, login.Password);
         if (user == null) return Unauthorized();
         return Ok(user);
     }
@@ -31,16 +30,16 @@ public class AuthenticationController(
     [HttpPost("register"), ApiVersion("1.0"), AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterDto register)
     {
-        var existingUser = await context.Users.SingleOrDefaultAsync(u => u.Username == register.Username);
+        var existingUser = await _context.Users.SingleOrDefaultAsync(u => u.Username == register.Username);
         if (existingUser != null) return BadRequest("Username already exists");
-        existingUser = await context.Users.SingleOrDefaultAsync(u => u.Email == register.Email);
+        existingUser = await _context.Users.SingleOrDefaultAsync(u => u.Email == register.Email);
         if (existingUser != null) return BadRequest("Email already exists");
         User? user = register;
-        context.Users.Add(user);
-        context.Settings.Add(new() { User = user, UserId = user.Id });
-        await context.SaveChangesAsync();
+        _context.Users.Add(user);
+        _context.Settings.Add(new() { User = user, UserId = user.Id });
+        await _context.SaveChangesAsync();
 
-        var authenticatedUser = await authService.AuthenticateAsync(user.Username, user.Password);
+        var authenticatedUser = await _authService.AuthenticateAsync(user.Username, user.Password);
         if (authenticatedUser == null) return BadRequest("Error occurred during registration");
         return Ok(authenticatedUser);
     }
@@ -54,13 +53,13 @@ public class AuthenticationController(
         {
             var claimsPrincipal = tokenHandler.ValidateToken(
                 token,
-                ValidationParameters(configuration),
+                ValidationParameters(_configuration),
                 out var validatedToken);
             var jwtToken = validatedToken as JwtSecurityToken;
             if (jwtToken == null) return Unauthorized(new TokenValidationResult { IsValid = false, Reason = "Invalid token" });
             var personalKey = jwtToken.Claims.First(c => c.Type == PersonalKeyClaim).Value;
             var userId = jwtToken.Claims.First(c => c.Type == UserIdClaim).Value;
-            var user = context.Users.SingleOrDefault(u => u.Id.ToString() == userId);
+            var user = _context.Users.SingleOrDefault(u => u.Id.ToString() == userId);
             if (user == null) return Unauthorized(new TokenValidationResult { IsValid = false, Reason = "User not found" });
             if (user.PersonalKey != personalKey) return Unauthorized(new TokenValidationResult { IsValid = false, Reason = "Invalid personal key" });
             return Ok(new TokenValidationResult { IsValid = true, Reason = "Valid token" });
@@ -91,59 +90,67 @@ public class AuthenticationController(
     public async Task<IActionResult> Logout([FromHeader(Name = AuthHeader)] string token)
     {
         var (user, result, claimsPrincipal) = await GetUser();
-        if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
+        if (user == null
+         || claimsPrincipal == null)
+            return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
 
-        var personalKey = tokenService.ExtractClaim(claimsPrincipal, PersonalKeyClaim);
+        var personalKey = _tokenService.ExtractClaim(claimsPrincipal, PersonalKeyClaim);
         if (personalKey == null
          || user.PersonalKey != personalKey)
             return Unauthorized("Invalid token: PersonalKey is invalid");
 
         user.PersonalKey = Guid.NewGuid().ToString();
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return Ok("Logged out successfully");
     }
 
     [HttpPost("username/change"), ApiVersion("1.0"), Authorize]
-    public async Task<IActionResult> ChangeUsername([FromHeader(Name = AuthHeader)] string token,[FromBody] ChangeUsernameDto changeUsernameDto)
+    public async Task<IActionResult> ChangeUsername([FromHeader(Name = AuthHeader)] string token, [FromBody] ChangeUsernameDto changeUsernameDto)
     {
         var (user, result, claimsPrincipal) = await GetUser(token);
-        if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
+        if (user == null
+         || claimsPrincipal == null)
+            return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
 
-        var existingUser = await context.Users.SingleOrDefaultAsync(u => u.Username == changeUsernameDto.NewUsername);
+        var existingUser = await _context.Users.SingleOrDefaultAsync(u => u.Username == changeUsernameDto.NewUsername);
         if (existingUser != null) return BadRequest("Username already exists");
 
         user.Username = changeUsernameDto.NewUsername;
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return Ok("Username changed successfully");
     }
 
     [HttpPost("email/change"), ApiVersion("1.0"), Authorize]
-    public async Task<IActionResult> ChangeEmail([FromHeader(Name = AuthHeader)] string token,[FromBody] ChangeEmailDto changeEmailDto)
+    public async Task<IActionResult> ChangeEmail([FromHeader(Name = AuthHeader)] string token, [FromBody] ChangeEmailDto changeEmailDto)
     {
         var (user, result, claimsPrincipal) = await GetUser(token);
-        if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
+        if (user == null
+         || claimsPrincipal == null)
+            return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
 
-        var existingUser = await context.Users.SingleOrDefaultAsync(u => u.Email == changeEmailDto.NewEmail);
+        var existingUser = await _context.Users.SingleOrDefaultAsync(u => u.Email == changeEmailDto.NewEmail);
         if (existingUser != null) return BadRequest("Email already exists");
 
         user.Email = changeEmailDto.NewEmail;
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return Ok("Email changed successfully");
     }
 
     [HttpPost("password/reset"), ApiVersion("1.0"), Authorize]
-    public async Task<IActionResult> ResetPassword([FromHeader(Name = AuthHeader)] string token,[FromBody] ResetPasswordDto resetPasswordDto)
+    public async Task<IActionResult> ResetPassword([FromHeader(Name = AuthHeader)] string token, [FromBody] ResetPasswordDto resetPasswordDto)
     {
         var (user, result, claimsPrincipal) = await GetUser(token);
-        if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
-        var authenticatedUser = await authService.AuthenticateAsync(user.Username, resetPasswordDto.Old);
+        if (user == null
+         || claimsPrincipal == null)
+            return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
+        var authenticatedUser = await _authService.AuthenticateAsync(user.Username, resetPasswordDto.Old);
         if (authenticatedUser?.Authenticated != true) return BadRequest("Invalid password");
         user.Password = resetPasswordDto.New;
         user.PersonalKey = Guid.NewGuid().ToString();
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
         return Ok("Password reset successfully");
     }
 
@@ -151,7 +158,9 @@ public class AuthenticationController(
     public async Task<IActionResult> Profile([FromHeader(Name = AuthHeader)] string token)
     {
         var (user, result, claimsPrincipal) = await GetUser(token);
-        if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
+        if (user == null
+         || claimsPrincipal == null)
+            return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
         return Ok((ProfileDto)user);
     }
 
@@ -159,24 +168,27 @@ public class AuthenticationController(
     public async Task<IActionResult> GetSettings([FromHeader(Name = AuthHeader)] string token)
     {
         var (user, result, claimsPrincipal) = await GetUser(token);
-        if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
-        var settings = await context.Settings.FindAsync(user.Id);
+        if (user == null
+         || claimsPrincipal == null)
+            return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
+        var settings = await _context.Settings.FindAsync(user.Id);
         if (settings == null) return NotFound();
 
         return Ok(settings);
     }
 
     [HttpPut("settings"), ApiVersion("1.0"), Authorize]
-    public async Task<IActionResult> UpdateSettings([FromHeader(Name = AuthHeader)] string token,[FromBody] SettingsDto settingsDto)
+    public async Task<IActionResult> UpdateSettings([FromHeader(Name = AuthHeader)] string token, [FromBody] SettingsDto settingsDto)
     {
         var (user, result, claimsPrincipal) = await GetUser(token);
-        if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
-        var settings = await context.Settings.FindAsync(user.Id);
+        if (user == null
+         || claimsPrincipal == null)
+            return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
+        var settings = await _context.Settings.FindAsync(user.Id);
         if (settings == null) return NotFound();
-        
-        //TODO
 
-        await context.SaveChangesAsync();
+        //TODO
+        await _context.SaveChangesAsync();
         return Ok("Settings updated successfully");
     }
 }

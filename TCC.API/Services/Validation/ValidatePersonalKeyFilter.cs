@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Configuration;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
-using TCC.API.Data;
-using static TCC.API.Services.TokenService;
-
-namespace TCC.API.Services.Validation
+﻿namespace TCC.API.Services.Validation
 {
     public class ValidatePersonalKeyFilter : IAsyncAuthorizationFilter
     {

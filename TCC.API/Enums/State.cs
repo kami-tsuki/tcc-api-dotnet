@@ -2,20 +2,20 @@
 
 public enum State
 {
-    NEW,
-    ACTIVE,
-    INACTIVE,
-    DELETED,
-    REACTIVATED,
-    ARCHIVED,
-    PENDING,
-    APPROVED,
-    REJECTED,
-    CANCELLED,
-    COMPLETED,
-    FAILED,
-    EXPIRED,
-    SUSPENDED,
-    CLOSED,
-    FINISHED
+    New,
+    Active,
+    Inactive,
+    Deleted,
+    Reactivated,
+    Archived,
+    Pending,
+    Approved,
+    Rejected,
+    Cancelled,
+    Completed,
+    Failed,
+    Expired,
+    Suspended,
+    Closed,
+    Finished
 }

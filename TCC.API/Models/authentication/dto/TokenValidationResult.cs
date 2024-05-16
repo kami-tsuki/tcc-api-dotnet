@@ -1,12 +1,10 @@
-﻿using System.Text.Json.Serialization;
-
-namespace TCC.API.models.authentication.DataTransfer;
+﻿namespace TCC.API.Models.authentication.dto;
 
 public class TokenValidationResult
 {
     public bool IsValid { get; set; }
-    public string Reason { get; set; }
-    [JsonIgnore]
+    public string Reason { get; set; } = string.Empty;
+    [JsonIgnore, NotMapped]
     public Exception? Exception { get; set; }
     
     public string? ExceptionMessage => Exception?.Message;

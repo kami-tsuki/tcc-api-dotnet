@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using static TCC.API.Services.TokenService;
-
-namespace TCC.API.Controllers;
-
-
+﻿namespace TCC.API.Controllers;
 
 public class BaseController(
     IAuthenticationService authService,
@@ -16,7 +11,7 @@ public class BaseController(
     protected async Task<(User? user, IActionResult? result, ClaimsPrincipal? claimsPrincipal)> GetUser(string? token = null)
     {
         token ??= Request.Headers[AuthHeader];
-        if  (string.IsNullOrEmpty(token)) return (null, Unauthorized("Invalid token: Token is missing"), null);
+        if (string.IsNullOrEmpty(token)) return (null, Unauthorized("Invalid token: Token is missing"), null);
         var claimsPrincipal = tokenService.ValidateToken(token, out _);
         if (claimsPrincipal == null) return (null, Unauthorized("Invalid token: ClaimsPrincipal is null"), claimsPrincipal);
         var userId = tokenService.ExtractClaim(claimsPrincipal, UserIdClaim);
@@ -25,5 +20,4 @@ public class BaseController(
         if (user == null) return (null, Unauthorized("Invalid token: User not found"), claimsPrincipal);
         return (user, null, claimsPrincipal);
     }
-    
 }

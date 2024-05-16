@@ -22,9 +22,9 @@ public class TokenService(IConfiguration configuration, TccDbContext context) : 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
-    
+
     public string? ExtractClaim(ClaimsPrincipal claimsPrincipal, string claimType) => claimsPrincipal.Claims.FirstOrDefault(c => c.Type == claimType)?.Value;
-    
+
     public ClaimsPrincipal? ValidateToken(string token, out SecurityToken validatedToken)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -33,7 +33,7 @@ public class TokenService(IConfiguration configuration, TccDbContext context) : 
             ValidationParameters(configuration),
             out validatedToken);
     }
-    
+
     public static TokenValidationParameters ValidationParameters(IConfiguration configuration) => new()
     {
         ValidateIssuer = false,

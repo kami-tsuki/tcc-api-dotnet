@@ -3,12 +3,12 @@
 public class Driver : BaseEntity
 {
     
-    public string Name { get; set; }
-    public string? Email { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Email { get; set; } = string.Empty;
     public State Status { get; set; }
     
     [InverseProperty(nameof(TravelEntry.Driver))]
-    public IEnumerable<TravelEntry> TravelEntries { get; set; }
+    public IEnumerable<TravelEntry> TravelEntries { get; set; } = new List<TravelEntry>();
     
     public ulong? UserId { get; set; }
     

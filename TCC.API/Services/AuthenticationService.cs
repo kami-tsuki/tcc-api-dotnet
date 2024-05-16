@@ -1,7 +1,7 @@
 ﻿namespace TCC.API.Services;
 
 public class AuthenticationService(
-    TccDbContext context, 
+    TccDbContext context,
     ITokenService tokenService)
     : IAuthenticationService
 {
@@ -12,6 +12,6 @@ public class AuthenticationService(
         TokenDto token = user;
         return token.WithToken(tokenService.GenerateToken(user));
     }
-    
+
     public async Task<User?> GetUserById(string userId) => await context.Users.SingleOrDefaultAsync(u => u.Id.ToString() == userId);
 }

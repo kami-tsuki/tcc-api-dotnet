@@ -2,9 +2,9 @@
 
 public class ProfileDto
 {
-    public ulong UserId { get; set; }
-    public string Username { get; set; }
-    public string Email { get; set; }
+    public ulong UserId { get; set; } 
+    public string Username { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
     public ulong? RoleId { get; set; }
     public ulong? SettingsId { get; set; }
 

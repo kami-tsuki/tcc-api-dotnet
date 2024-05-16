@@ -9,16 +9,16 @@ public class Document : BaseEntity
     public string Content { get; set; }
     
     [MaxLength(100)]
-    public string Author { get; set; }
+    public string Author { get; set; } = string.Empty;
     
     public State Status { get; set; }
     public ulong UserId { get; set; }
     
     [ForeignKey(nameof(UserId))]
-    public User User { get; set; } 
+    public User User { get; set; }  
     
     [InverseProperty(nameof(TravelEntry.Document))]
-    public IEnumerable<TravelEntry> TravelEntries { get; set; }
+    public IEnumerable<TravelEntry> TravelEntries { get; set; } = new List<TravelEntry>();
     
     [InverseProperty(nameof(Driver.Document))]
     public Driver Driver { get; set; }

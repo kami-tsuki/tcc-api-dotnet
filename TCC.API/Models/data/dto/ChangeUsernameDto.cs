@@ -2,5 +2,5 @@
 
 public class ChangeUsernameDto
 {
-    public string NewUsername { get; set; }
+    public string NewUsername { get; set; } = string.Empty;
 }
