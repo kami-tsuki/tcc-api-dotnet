@@ -1,4 +1,6 @@
-﻿namespace TCC.API.models.authentication;
+﻿using static System.Guid;
+
+namespace TCC.API.models.authentication;
 
 [Table("Users")]
 public class User : BaseEntity
@@ -36,4 +38,6 @@ public class User : BaseEntity
     
     [ForeignKey(nameof(SettingsId))]
     public Settings? Settings { get; set; }
+    
+    public string PersonalKey { get; set; } = NewGuid().ToString();
 }

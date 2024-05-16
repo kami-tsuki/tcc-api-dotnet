@@ -12,7 +12,7 @@ public class TccDbContext(DbContextOptions<TccDbContext> options, IEncryptionSer
         new() { Id = 1001UL, Name = "App-Admin" },
         new() { Id = 1002UL, Name = "API-Admin" }
     ]; 
-    public DbSet<User> Users { get; set; }
+    public DbSet<User?> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Settings> Settings { get; set; }
     public DbSet<Vehicle> Vehicles { get; set; }

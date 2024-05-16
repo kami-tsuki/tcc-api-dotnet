@@ -2,5 +2,6 @@
 
 public interface IAuthenticationService
 {
-    Task<TokenDt?> Authenticate(string username, string password);
+    Task<TokenDto?> AuthenticateAsync(string username, string password);
+    Task<User?> GetUserById(string userId);
 }

@@ -5,11 +5,13 @@ public class AuthenticationService(
     ITokenService tokenService)
     : IAuthenticationService
 {
-    public async Task<TokenDt?> Authenticate(string username, string password)
+    public async Task<TokenDto?> AuthenticateAsync(string username, string password)
     {
         var user = await context.Users.SingleOrDefaultAsync(u => u.Username == username.ToLower() && u.Password == password);
         if (user == null) return null;
-        TokenDt token = user;
+        TokenDto token = user;
         return token.WithToken(tokenService.GenerateToken(user));
     }
+    
+    public async Task<User?> GetUserById(string userId) => await context.Users.SingleOrDefaultAsync(u => u.Id.ToString() == userId);
 }

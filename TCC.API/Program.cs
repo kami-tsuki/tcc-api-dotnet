@@ -1,3 +1,6 @@
+using TCC.API.Services.Validation;
+using static TCC.API.Services.TokenService;
+
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -11,7 +14,10 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidatePersonalKeyFilter>();
+});
 
 // Add API Versioning
 builder.Services.AddApiVersioning(
@@ -38,13 +44,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
        .AddJwtBearer(
             options =>
             {
-                options.TokenValidationParameters = TokenService.ValidationParameters(builder.Configuration);
+                options.TokenValidationParameters = ValidationParameters(builder.Configuration);
 
                 options.Events = new()
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Headers["x-auth-token"];
+                        context.Token = context.Request.Headers[AuthHeader];
                         return Task.CompletedTask;
                     },
                 };
