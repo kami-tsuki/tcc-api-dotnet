@@ -105,9 +105,9 @@ public class AuthenticationController(
     }
 
     [HttpPost("username/change"), ApiVersion("1.0"), Authorize]
-    public async Task<IActionResult> ChangeUsername([FromBody] ChangeUsernameDto changeUsernameDto)
+    public async Task<IActionResult> ChangeUsername([FromHeader(Name = AuthHeader)] string token,[FromBody] ChangeUsernameDto changeUsernameDto)
     {
-        var (user, result, claimsPrincipal) = await GetUser();
+        var (user, result, claimsPrincipal) = await GetUser(token);
         if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
 
         var existingUser = await context.Users.SingleOrDefaultAsync(u => u.Username == changeUsernameDto.NewUsername);
@@ -120,9 +120,9 @@ public class AuthenticationController(
     }
 
     [HttpPost("email/change"), ApiVersion("1.0"), Authorize]
-    public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailDto changeEmailDto)
+    public async Task<IActionResult> ChangeEmail([FromHeader(Name = AuthHeader)] string token,[FromBody] ChangeEmailDto changeEmailDto)
     {
-        var (user, result, claimsPrincipal) = await GetUser();
+        var (user, result, claimsPrincipal) = await GetUser(token);
         if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
 
         var existingUser = await context.Users.SingleOrDefaultAsync(u => u.Email == changeEmailDto.NewEmail);
@@ -135,12 +135,12 @@ public class AuthenticationController(
     }
 
     [HttpPost("password/reset"), ApiVersion("1.0"), Authorize]
-    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+    public async Task<IActionResult> ResetPassword([FromHeader(Name = AuthHeader)] string token,[FromBody] ResetPasswordDto resetPasswordDto)
     {
-        var (user, result, claimsPrincipal) = await GetUser();
+        var (user, result, claimsPrincipal) = await GetUser(token);
         if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
         var authenticatedUser = await authService.AuthenticateAsync(user.Username, resetPasswordDto.Old);
-        if (authenticatedUser?.Authenticated == true) return BadRequest("Invalid password");
+        if (authenticatedUser?.Authenticated != true) return BadRequest("Invalid password");
         user.Password = resetPasswordDto.New;
         user.PersonalKey = Guid.NewGuid().ToString();
         await context.SaveChangesAsync();
@@ -148,17 +148,17 @@ public class AuthenticationController(
     }
 
     [HttpGet("profile"), ApiVersion("1.0"), Authorize]
-    public async Task<IActionResult> Profile()
+    public async Task<IActionResult> Profile([FromHeader(Name = AuthHeader)] string token)
     {
-        var (user, result, claimsPrincipal) = await GetUser();
+        var (user, result, claimsPrincipal) = await GetUser(token);
         if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
         return Ok((ProfileDto)user);
     }
 
     [HttpGet("settings"), ApiVersion("1.0"), Authorize]
-    public async Task<IActionResult> GetSettings()
+    public async Task<IActionResult> GetSettings([FromHeader(Name = AuthHeader)] string token)
     {
-        var (user, result, claimsPrincipal) = await GetUser();
+        var (user, result, claimsPrincipal) = await GetUser(token);
         if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
         var settings = await context.Settings.FindAsync(user.Id);
         if (settings == null) return NotFound();
@@ -167,9 +167,9 @@ public class AuthenticationController(
     }
 
     [HttpPut("settings"), ApiVersion("1.0"), Authorize]
-    public async Task<IActionResult> UpdateSettings([FromBody] SettingsDto settingsDto)
+    public async Task<IActionResult> UpdateSettings([FromHeader(Name = AuthHeader)] string token,[FromBody] SettingsDto settingsDto)
     {
-        var (user, result, claimsPrincipal) = await GetUser();
+        var (user, result, claimsPrincipal) = await GetUser(token);
         if (user == null || claimsPrincipal == null) return result ?? Unauthorized("Invalid token: User or ClaimsPrincipal is null");
         var settings = await context.Settings.FindAsync(user.Id);
         if (settings == null) return NotFound();
@@ -177,7 +177,6 @@ public class AuthenticationController(
         //TODO
 
         await context.SaveChangesAsync();
-
         return Ok("Settings updated successfully");
     }
 }

@@ -13,9 +13,9 @@ public class BaseController(
     ITokenService tokenService
 ) : ControllerBase
 {
-    protected async Task<(User? user, IActionResult? result, ClaimsPrincipal? claimsPrincipal)> GetUser()
+    protected async Task<(User? user, IActionResult? result, ClaimsPrincipal? claimsPrincipal)> GetUser(string? token = null)
     {
-        var token = Request.Headers[AuthHeader];
+        token ??= Request.Headers[AuthHeader];
         if  (string.IsNullOrEmpty(token)) return (null, Unauthorized("Invalid token: Token is missing"), null);
         var claimsPrincipal = tokenService.ValidateToken(token, out _);
         if (claimsPrincipal == null) return (null, Unauthorized("Invalid token: ClaimsPrincipal is null"), claimsPrincipal);
