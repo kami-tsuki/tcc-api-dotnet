@@ -17,7 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddApiVersioning(
     config =>
     {
-        config.DefaultApiVersion = new ApiVersion(1, 0);
+        config.DefaultApiVersion = new(1, 0);
         config.AssumeDefaultVersionWhenUnspecified = true;
         config.ReportApiVersions = true;
         config.ApiVersionReader = new UrlSegmentApiVersionReader();
@@ -27,7 +27,10 @@ builder.Services.AddApiVersioning(
 builder.Services.AddSwaggerGen(
     c =>
     {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+        c.SwaggerDoc(
+            "v1",
+            new()
+                { Title = "Your API", Version = "v1" });
     });
 
 // Add Authentication
@@ -35,16 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
        .AddJwtBearer(
             options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                };
+                options.TokenValidationParameters = TokenService.ValidationParameters(builder.Configuration);
 
                 options.Events = new()
                 {
@@ -62,11 +56,11 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<TccDbContext>();
-    if (!context.Roles.Any(r => r.Id == 1))
-    {
-        context.Roles.Add(new Role { Id = 1, Name = "Guest" });
-        context.SaveChanges();
-    }
+    context.Database.Migrate();
+    foreach (var role in TccDbContext.DefaultRoles
+                                     .Where(role => context.Roles.FirstOrDefault(r => r.Id == role.Id) == null))
+        context.Roles.Add(role);
+    context.SaveChanges();
 }
 
 // Configure the HTTP request pipeline.

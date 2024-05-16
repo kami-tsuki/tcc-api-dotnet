@@ -1,21 +1,21 @@
 ﻿namespace TCC.API.models.authentication.DataTransfer;
 
-public class UserDt 
+public class TokenDt 
 {
-    public int? Id { get; set; } 
+    public ulong? Id { get; set; } 
     public string? Username { get; set; }
-    public int? RoleId { get; set; }
+    public ulong? RoleId { get; set; }
     public string? Token { get; set; }
     public bool Authenticated => Token != null;
 
-    public static implicit operator UserDt(User user) => new UserDt
+    public static implicit operator TokenDt(User user) => new()
     {
         Id = user.Id,
         Username = user.Username,
         RoleId = user.RoleId
     };
     
-    public UserDt WithToken(string token)
+    public TokenDt WithToken(string token)
     {
         Token = token;
         return this;

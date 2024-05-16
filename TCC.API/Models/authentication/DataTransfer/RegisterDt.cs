@@ -5,10 +5,10 @@ public class RegisterDt
     public string Username { get; set; }
     public string Password { get; set; }
     public string Email { get; set; }
-    public int RoleId { get; set; }
+    public ulong RoleId { get; set; }
 
     public static implicit operator User(RegisterDt register) =>
-        new User
+        new()
         {
             Username = register.Username,
             Password = register.Password,

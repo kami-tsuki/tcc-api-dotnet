@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-namespace TCC.API.Data;
+﻿namespace TCC.API.Data;
 
 public class TccDbContextFactory : IDesignTimeDbContextFactory<TccDbContext>
 {

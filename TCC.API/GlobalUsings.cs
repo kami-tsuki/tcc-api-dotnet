@@ -1,21 +1,31 @@
 ﻿// Global using directives
 
 global using System;
+global using System.Collections;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Data.SqlClient;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Runtime.CompilerServices;
+global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Text;
+global using System.Threading.Tasks;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.Versioning;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Design;
 global using Microsoft.EntityFrameworkCore.Query.Internal;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.OpenApi.Models;
 global using TCC.API.Data;
+global using TCC.API.Enums;
 global using TCC.API.Models;
 global using TCC.API.models.authentication;
+global using TCC.API.models.authentication.DataTransfer;
+global using TCC.API.Models.data;
 global using TCC.API.Services;
 global using TCC.API.Services.Interfaces;
